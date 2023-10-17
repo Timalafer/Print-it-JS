@@ -1,3 +1,4 @@
+//tableau images
 const slides = [
 	{
 		"image": "slide1.jpg",
