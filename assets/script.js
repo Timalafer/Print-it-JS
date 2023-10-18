@@ -1,4 +1,4 @@
-//tableau images
+// Tableau des images
 const slides = [
 	{
 		"image": "slide1.jpg",
@@ -18,31 +18,47 @@ const slides = [
 	}
 ];
 
+// Déclaration des éléments du carrousel
 const banner = document.getElementById('banner');
-
 const leftArrow = document.createElement('img');
+
 leftArrow.src = './assets/images/arrow_left.png';
 leftArrow.alt = 'Left Arrow';
 leftArrow.classList.add('arrow', 'arrow_left');
+
 
 const rightArrow = document.createElement('img');
 rightArrow.src = './assets/images/arrow_right.png';
 rightArrow.alt = 'Right Arrow';
 rightArrow.classList.add('arrow', 'arrow_right');
 
+// Ajout des flèches au carrousel
 banner.appendChild(leftArrow);
 banner.appendChild(rightArrow);
 
+// Gestion du clic sur les flèches
 leftArrow.addEventListener('click', () => {
-	console.log('Left arrow clicked');
+	clearInterval(timer);
+	let prevSlide = currentSlide - 1;
+	if (prevSlide < 0) {
+		prevSlide = slides.length - 1;
+	}
+	changeSlide(prevSlide);
+	startCarousel();
 });
 
 rightArrow.addEventListener('click', () => {
-	console.log('Right arrow clicked');
+	clearInterval(timer);
+	let nextSlide = currentSlide + 1;
+	if (nextSlide > slides.length - 1) {
+		nextSlide = 0;
+	}
+	changeSlide(nextSlide);
+	startCarousel();
 });
 
+// Ajout des points
 const dotsContainer = document.querySelector('.dots');
-
 slides.forEach((slide, index) => {
 	const dot = document.createElement('div');
 	dot.classList.add('dot');
@@ -53,17 +69,16 @@ slides.forEach((slide, index) => {
 });
 
 let currentSlide = 0;
+let timer;
 
-const changeSlide = (index) => {
+// Fonction pour mettre à jour le carrousel
+function changeSlide(index) {
 	const bannerImg = document.querySelector('.banner-img');
 	const bannerText = document.querySelector('#banner p');
 	const dots = document.querySelectorAll('.dot');
-
 	currentSlide = (index + slides.length) % slides.length;
-
 	bannerImg.src = `./assets/images/slideshow/${slides[currentSlide].image}`;
 	bannerText.innerHTML = slides[currentSlide].tagLine;
-
 	dots.forEach((dot, dotIndex) => {
 		if (dotIndex === currentSlide) {
 			dot.classList.add('dot_selected');
@@ -71,22 +86,18 @@ const changeSlide = (index) => {
 			dot.classList.remove('dot_selected');
 		}
 	});
-};
+}
 
-rightArrow.addEventListener('click', () => {
-	let nextSlide = currentSlide + 1;
-	if (nextSlide > slides.length - 1) {
-		nextSlide = 0;
-	}
-	changeSlide(nextSlide);
-});
+// Fonction pour commencer le carrousel
+function startCarousel() {
+	timer = setInterval(() => {
+		let nextSlide = currentSlide + 1;
+		if (nextSlide > slides.length - 1) {
+			nextSlide = 0;
+		}
+		changeSlide(nextSlide);
+	}, 4000);
+}
 
-leftArrow.addEventListener('click', () => {
-	let prevSlide = currentSlide - 1;
-	if (prevSlide < 0) {
-		prevSlide = slides.length - 1;
-	}
-	changeSlide(prevSlide);
-});
-
-
+// Lancer le carrousel au chargement de la page
+window.addEventListener('load', startCarousel);
